@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Env
+.env
+.venv
+env/
+venv/
+
+# ForgeMind runtime
+.forgemind/
+*.gguf
+*.safetensors
+models/
+
+# Tests / typing
+.pytest_cache/
+.coverage
+.mypy_cache/
+.ruff_cache/
+
+# IDE / OS
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
