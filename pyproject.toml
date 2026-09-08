@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "forgemind"
+version = "0.1.0"
+description = "MCP-native multi-agent AI platform with approvals, traces, and evals"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+authors = [{name = "Kamalesh"}]
+
+[project.optional-dependencies]
+local = ["llama-cpp-python>=0.2"]
+dev = ["pytest>=7.0", "httpx", "ruff", "mypy"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v"
+
+[tool.mypy]
+python_version = "3.9"
+strict = false
+ignore_missing_imports = true
