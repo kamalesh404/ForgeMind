@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ForgeMind Dashboard</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header>
+  <h1>&#x1F9E0; ForgeMind</h1>
+  <p>MCP-native multi-agent platform &mdash; live runs, tools, traces</p>
+  <div id="health" class="pill">checking&hellip;</div>
+</header>
+
+<main>
+  <section class="card">
+    <h2>New run</h2>
+    <textarea id="goal" rows="3" placeholder="e.g. What is (12 + 8) * 3? Reply with just the number."></textarea>
+    <div class="row">
+      <label>Max steps <input id="maxSteps" type="number" value="12" min="1" max="30"></label>
+      <label>Approvals
+        <select id="approvalMode">
+          <option value="auto">auto</option>
+          <option value="confirm_tools">confirm_tools</option>
+          <option value="confirm_all">confirm_all</option>
+        </select>
+      </label>
+      <button id="runBtn">Run goal</button>
+    </div>
+    <div id="runResult"></div>
+  </section>
+
+  <section class="card">
+    <h2>Live event stream</h2>
+    <div class="row">
+      <button id="wsBtn">Connect</button>
+      <span id="wsState" class="pill">disconnected</span>
+    </div>
+    <pre id="events">No events yet.</pre>
+  </section>
+
+  <section class="card">
+    <h2>Tools</h2>
+    <button id="toolsBtn">Refresh tools</button>
+    <ul id="tools"></ul>
+  </section>
+
+  <section class="card">
+    <h2>Traces</h2>
+    <button id="tracesBtn">Refresh traces</button>
+    <ul id="traces"></ul>
+  </section>
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>
