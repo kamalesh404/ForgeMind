@@ -2,11 +2,22 @@
 
 from __future__ import annotations
 
+import http.client
 import json
+import urllib.error
 import urllib.request
 from typing import Any, Dict, List
 
+from src.core.retry import retry_with_backoff
 from src.llm.base import LLMBackend
+
+_RETRYABLE = (
+    urllib.error.URLError,
+    TimeoutError,
+    ConnectionError,
+    http.client.HTTPException,
+    OSError,
+)
 
 
 class OllamaBackend(LLMBackend):
@@ -29,6 +40,7 @@ class OllamaBackend(LLMBackend):
     def loaded(self) -> bool:
         return self._loaded
 
+    @retry_with_backoff(max_retries=3, base_delay=1.0, retryable_exceptions=_RETRYABLE)
     def chat(self, messages: List[Dict[str, str]], *, temperature: float = 0.3,
              max_tokens: int = 2048) -> str:
         payload = {
