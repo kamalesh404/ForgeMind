@@ -4,7 +4,12 @@ from __future__ import annotations
 
 from typing import Any, Dict, List
 
+from src.core.retry import retry_with_backoff
 from src.llm.base import LLMBackend
+
+# Only genuinely transient failures are retried. Deterministic errors
+# (model not loaded, context overflow, bad prompt) must fail fast.
+_TRANSIENT_INFERENCE_ERRORS = (ConnectionError, TimeoutError, OSError)
 
 
 class LlamaCppBackend(LLMBackend):
@@ -48,12 +53,23 @@ class LlamaCppBackend(LLMBackend):
         parts.append("<|im_start|>assistant\n")
         return "\n".join(parts)
 
-    def chat(self, messages: List[Dict[str, str]], *, temperature: float = 0.3,
-             max_tokens: int = 2048) -> str:
+    def chat(
+        self, messages: List[Dict[str, str]], *, temperature: float = 0.3, max_tokens: int = 2048
+    ) -> str:
         if not self._llm:
             raise RuntimeError("Model not loaded. Call load() first.")
+        return self._complete_with_retry(
+            self._prompt(messages), temperature=temperature, max_tokens=max_tokens
+        )
+
+    @retry_with_backoff(
+        max_retries=2, base_delay=0.5, retryable_exceptions=_TRANSIENT_INFERENCE_ERRORS
+    )
+    def _complete_with_retry(self, prompt: str, temperature: float, max_tokens: int) -> str:
         out = self._llm.create_completion(
-            prompt=self._prompt(messages), temperature=temperature,
-            max_tokens=max_tokens, stop=["<|im_end|>", "<|im_start|>"],
+            prompt=prompt,
+            temperature=temperature,
+            max_tokens=max_tokens,
+            stop=["<|im_end|>", "<|im_start|>"],
         )
         return out["choices"][0]["text"].strip()
