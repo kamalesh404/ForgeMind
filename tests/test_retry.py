@@ -1,7 +1,9 @@
 """Tests for retry decorator."""
 
-import pytest
 from unittest.mock import MagicMock
+
+import pytest
+
 from src.core.retry import retry_with_backoff
 
 

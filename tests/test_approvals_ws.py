@@ -1,7 +1,5 @@
 """Tests for approval gate edge cases and WebSocket lifecycle."""
 
-import json
-
 from fastapi.testclient import TestClient
 
 from src.api.server import build_app
